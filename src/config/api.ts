@@ -1,5 +1,5 @@
 // API Configuration
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://app.api.scmcs.org/api';
 export const APP_NAME = import.meta.env.VITE_APP_NAME || 'SCMCS';
 
 // API Endpoints
