@@ -1,14 +1,14 @@
-import apiClient from './api.service';
 import { API_ENDPOINTS } from '@/config/api';
-import { storage } from '@/utils/storage';
 import type {
-  LoginRequest,
-  LoginResponse,
-  SignUpRequest,
-  SignUpResponse,
-  PasswordUpdateRequest,
-  PasswordUpdateResponse,
+    LoginRequest,
+    LoginResponse,
+    PasswordUpdateRequest,
+    PasswordUpdateResponse,
+    SignUpRequest,
+    SignUpResponse,
 } from '@/models/auth.model';
+import { storage } from '@/utils/storage';
+import apiClient from './api.service';
 
 export const authService = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -39,7 +39,16 @@ export const authService = {
   updatePassword: async (data: PasswordUpdateRequest): Promise<PasswordUpdateResponse> => {
     const response = await apiClient.post<PasswordUpdateResponse>(
       API_ENDPOINTS.PASSWORD_UPDATE,
-      data
+      {
+        token: data.token,
+        newPassword: data.newPassword,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/ld+json',
+          'accept': 'application/ld+json',
+        },
+      }
     );
     return response.data;
   },

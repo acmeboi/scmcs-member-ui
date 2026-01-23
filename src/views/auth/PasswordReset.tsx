@@ -1,11 +1,11 @@
-import { Form, Input, Button, Typography } from 'antd';
-import { LockOutlined } from '@ant-design/icons';
-import { Link, useSearchParams } from 'react-router-dom';
-import { useAuthViewModel } from '@/viewmodels/auth.viewmodel';
-import { ROUTES } from '@/config/routes';
-import { validators } from '@/utils/validators';
-import { useToken } from '@/hooks/useToken';
 import { AuthIllustration } from '@/components/auth/AuthIllustration';
+import { ROUTES } from '@/config/routes';
+import { useToken } from '@/hooks/useToken';
+import { validators } from '@/utils/validators';
+import { useAuthViewModel } from '@/viewmodels/auth.viewmodel';
+import { LockOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Typography } from 'antd';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
@@ -16,14 +16,27 @@ const PasswordReset: React.FC = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') || '';
 
-  const onFinish = async (values: { newPassword: string; confirmPassword: string }) => {
+  const onFinish = async (values: { newPassword: string; confirmPassword: string; token?: string }) => {
     try {
+      // Get token from URL or form input
+      const resetToken = token || values.token;
+      
+      if (!resetToken) {
+        form.setFields([
+          {
+            name: 'token',
+            errors: ['Reset token is required'],
+          },
+        ]);
+        return;
+      }
+
       await updatePassword({
-        token: token || values.newPassword, // Fallback if token not in URL
+        token: resetToken,
         newPassword: values.newPassword,
-        confirmPassword: values.confirmPassword,
+        // confirmPassword is only for UI validation, not sent to API
       });
-    } catch (error) {
+    } catch {
       // Error handled in viewmodel
     }
   };
