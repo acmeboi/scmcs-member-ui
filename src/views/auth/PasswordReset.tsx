@@ -16,14 +16,27 @@ const PasswordReset: React.FC = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') || '';
 
-  const onFinish = async (values: { newPassword: string; confirmPassword: string }) => {
+  const onFinish = async (values: { newPassword: string; confirmPassword: string; token?: string }) => {
     try {
+      // Get token from URL or form input
+      const resetToken = token || values.token;
+      
+      if (!resetToken) {
+        form.setFields([
+          {
+            name: 'token',
+            errors: ['Reset token is required'],
+          },
+        ]);
+        return;
+      }
+
       await updatePassword({
-        token: token || values.newPassword, // Fallback if token not in URL
+        token: resetToken,
         newPassword: values.newPassword,
-        confirmPassword: values.confirmPassword,
+        // confirmPassword is only for UI validation, not sent to API
       });
-    } catch (error) {
+    } catch {
       // Error handled in viewmodel
     }
   };
