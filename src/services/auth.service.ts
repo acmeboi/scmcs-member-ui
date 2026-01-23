@@ -39,7 +39,16 @@ export const authService = {
   updatePassword: async (data: PasswordUpdateRequest): Promise<PasswordUpdateResponse> => {
     const response = await apiClient.post<PasswordUpdateResponse>(
       API_ENDPOINTS.PASSWORD_UPDATE,
-      data
+      {
+        token: data.token,
+        newPassword: data.newPassword,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/ld+json',
+          'accept': 'application/ld+json',
+        },
+      }
     );
     return response.data;
   },

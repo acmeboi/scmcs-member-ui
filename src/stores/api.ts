@@ -191,7 +191,14 @@ export const apiSlice = createApi({
       query: (data) => ({
         url: API_ENDPOINTS.PASSWORD_UPDATE,
         method: 'POST',
-        data: data,
+        data: {
+          token: data.token,
+          newPassword: data.newPassword,
+        },
+        headers: {
+          'Content-Type': 'application/ld+json',
+          'accept': 'application/ld+json',
+        },
       }),
       invalidatesTags: ['Auth', 'User'],
     }),
