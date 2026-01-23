@@ -3,8 +3,9 @@ import { ROUTES } from '@/config/routes';
 import { useToken } from '@/hooks/useToken';
 import { validators } from '@/utils/validators';
 import { useAuthViewModel } from '@/viewmodels/auth.viewmodel';
-import { LockOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Typography } from 'antd';
+import { CheckCircleOutlined, LockOutlined } from '@ant-design/icons';
+import { Alert, Button, Form, Input, Typography } from 'antd';
+import { useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;
@@ -16,9 +17,16 @@ const PasswordReset: React.FC = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') || '';
 
+  // Automatically set token in form if present in URL
+  useEffect(() => {
+    if (token) {
+      form.setFieldsValue({ token });
+    }
+  }, [token, form]);
+
   const onFinish = async (values: { newPassword: string; confirmPassword: string; token?: string }) => {
     try {
-      // Get token from URL or form input
+      // Automatically use token from URL if available, otherwise use form input
       const resetToken = token || values.token;
       
       if (!resetToken) {
@@ -90,6 +98,18 @@ const PasswordReset: React.FC = () => {
             Enter your new password below
           </Text>
         </div>
+        
+        {token && (
+          <Alert
+            message="Reset token detected"
+            description="Your password reset link has been automatically recognized. Please enter your new password below."
+            type="success"
+            icon={<CheckCircleOutlined />}
+            showIcon
+            style={{ marginBottom: tokenHook.sizeLG }}
+          />
+        )}
+        
         <Form
           form={form}
           name="passwordReset"
