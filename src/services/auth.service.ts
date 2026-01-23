@@ -1,14 +1,14 @@
-import apiClient from './api.service';
 import { API_ENDPOINTS } from '@/config/api';
-import { storage } from '@/utils/storage';
 import type {
-  LoginRequest,
-  LoginResponse,
-  SignUpRequest,
-  SignUpResponse,
-  PasswordUpdateRequest,
-  PasswordUpdateResponse,
+    LoginRequest,
+    LoginResponse,
+    PasswordUpdateRequest,
+    PasswordUpdateResponse,
+    SignUpRequest,
+    SignUpResponse,
 } from '@/models/auth.model';
+import { storage } from '@/utils/storage';
+import apiClient from './api.service';
 
 export const authService = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {

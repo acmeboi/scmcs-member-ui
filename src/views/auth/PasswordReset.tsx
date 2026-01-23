@@ -1,11 +1,11 @@
-import { Form, Input, Button, Typography } from 'antd';
-import { LockOutlined } from '@ant-design/icons';
-import { Link, useSearchParams } from 'react-router-dom';
-import { useAuthViewModel } from '@/viewmodels/auth.viewmodel';
-import { ROUTES } from '@/config/routes';
-import { validators } from '@/utils/validators';
-import { useToken } from '@/hooks/useToken';
 import { AuthIllustration } from '@/components/auth/AuthIllustration';
+import { ROUTES } from '@/config/routes';
+import { useToken } from '@/hooks/useToken';
+import { validators } from '@/utils/validators';
+import { useAuthViewModel } from '@/viewmodels/auth.viewmodel';
+import { LockOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Typography } from 'antd';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
