@@ -1,11 +1,24 @@
-import { Row, Col, Card, Statistic, Progress, Spin, Empty, Typography } from 'antd';
-import { CreditCardOutlined } from '@ant-design/icons';
+import { Row, Col, Card, Statistic, Progress, Spin, Empty, Typography, Divider } from 'antd';
+import { CreditCardOutlined, CheckCircleOutlined, DollarOutlined } from '@ant-design/icons';
 import MainLayout from '@/components/layout/MainLayout';
 import { useGetOutstandingLoansQuery } from '@/viewmodels/dashboard.viewmodel';
 import { colors } from '@/config/theme';
 import { formatNaira } from '@/utils/format';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
+
+// Helper function to get progress color based on percentage
+const getProgressColor = (percentage: number): string => {
+  if (percentage >= 75) {
+    return colors.success; // Green
+  } else if (percentage >= 50) {
+    return colors.info; // Blue
+  } else if (percentage >= 25) {
+    return '#FF9800'; // Orange
+  } else {
+    return colors.error; // Red
+  }
+};
 
 const Loans: React.FC = () => {
   const { data: loans, isLoading } = useGetOutstandingLoansQuery();
@@ -55,8 +68,8 @@ const Loans: React.FC = () => {
               }}
             >
               <Statistic
-                title={card.title}
-                value={card.amount}
+                title={card.type === 'total' ? 'Overall Total (Balance Remaining)' : card.title}
+                value={card.balance ?? card.amount}
                 prefix={<CreditCardOutlined style={{ color: card.type === 'total' ? colors.primary : colors.error }} />}
                 formatter={(value) => formatNaira(Number(value))}
                 valueStyle={{
@@ -65,21 +78,62 @@ const Loans: React.FC = () => {
                   fontWeight: card.type === 'total' ? 600 : 500,
                 }}
               />
+              
+              {(card.paidAmount !== undefined || card.balance !== undefined) && (
+                <>
+                  <Divider style={{ margin: '12px 0' }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <DollarOutlined style={{ color: colors.textSecondary, fontSize: 14 }} />
+                      <Text style={{ fontSize: 13, color: colors.textSecondary }}>Loan Amount:</Text>
+                    </div>
+                    <Text strong style={{ fontSize: 14, color: colors.text }}>
+                      {formatNaira(card.amount)}
+                    </Text>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <CheckCircleOutlined style={{ color: colors.success, fontSize: 14 }} />
+                      <Text style={{ fontSize: 13, color: colors.textSecondary }}>Paid:</Text>
+                    </div>
+                    <Text strong style={{ fontSize: 14, color: colors.success }}>
+                      {formatNaira(card.paidAmount ?? 0)}
+                    </Text>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 8, borderTop: `1px solid ${colors.borderLight}` }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <CreditCardOutlined style={{ color: colors.error, fontSize: 14 }} />
+                      <Text strong style={{ fontSize: 13, color: colors.text }}>Balance:</Text>
+                    </div>
+                    <Text strong style={{ fontSize: 15, color: colors.error }}>
+                      {formatNaira(card.balance ?? card.amount)}
+                    </Text>
+                  </div>
+                </>
+              )}
+
               {card.progress && (
                 <div style={{ marginTop: 16 }}>
                   <Progress
                     percent={card.progress.percentage}
                     status={card.progress.percentage >= 100 ? 'success' : 'active'}
-                    strokeColor={card.progress.percentage >= 100 ? colors.success : colors.primary}
+                    strokeColor={getProgressColor(card.progress.percentage)}
                     style={{ marginBottom: 8 }}
                   />
                   <div style={{ fontSize: 12, color: colors.textTertiary, lineHeight: 1.6 }}>
-                    <div>Time Progress: {card.progress.timeProgress.toFixed(1)}%</div>
-                    <div>Months Remaining: {card.progress.monthsRemaining}</div>
-                    {card.progress.startDate && card.progress.endDate && (
-                      <div style={{ marginTop: 4 }}>
-                        {card.progress.startDate} - {card.progress.endDate}
-                      </div>
+                    {card.type !== 'total' && (
+                      <>
+                        <div>Time Progress: {card.progress.timeProgress.toFixed(1)}%</div>
+                        <div>Months Remaining: {card.progress.monthsRemaining}</div>
+                        {card.progress.startDate && card.progress.endDate && (
+                          <div style={{ marginTop: 4 }}>
+                            {card.progress.startDate} - {card.progress.endDate}
+                          </div>
+                        )}
+                      </>
+                    )}
+                    {card.type === 'total' && (
+                      <div>Overall Progress: {card.progress.percentage.toFixed(1)}%</div>
                     )}
                   </div>
                 </div>

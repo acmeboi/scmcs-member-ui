@@ -2,6 +2,7 @@ import { ROUTES } from '@/config/routes';
 import { useNotification } from '@/hooks/useNotification';
 import type {
   LoginRequest,
+  PasswordResetRequest,
   PasswordUpdateRequest,
   SignUpRequest,
 } from '@/models/auth.model';
@@ -62,6 +63,21 @@ export const useAuthViewModel = () => {
     }
   };
 
+  const requestPasswordReset = async (data: PasswordResetRequest) => {
+    try {
+      setLoading(true);
+      const response = await authService.requestPasswordReset(data);
+      // Don't show notification here - let the UI handle success state
+      return response;
+    } catch (error: unknown) {
+      // For security, don't reveal if email exists or not
+      // Return success response anyway
+      return { message: 'If an account exists with this email, a password reset link has been sent.' };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async () => {
     try {
       setLoading(true);
@@ -81,6 +97,7 @@ export const useAuthViewModel = () => {
     login,
     signUp,
     updatePassword,
+    requestPasswordReset,
     logout,
     loading,
     isAuthenticated: authService.isAuthenticated,

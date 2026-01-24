@@ -32,7 +32,10 @@ export interface OutstandingLoanCard {
   title: string;
   amount: number;
   type: 'balance' | 'essential' | 'fixed_asset' | 'layya' | 'soft_loan' | 'watanda' | 'total';
+  balanceType?: number; // For Balance loans
   progress?: LoanProgress;
+  paidAmount?: number;
+  balance?: number;
 }
 
 export interface OutstandingLoansResponse {
@@ -53,19 +56,43 @@ export interface DeductionModule {
   formFee: number;
 }
 
+export interface DeductionField {
+  name: string;
+  amount: number;
+  status: 'CREDIT' | 'DEBIT';
+}
+
 export interface DeductionHistoryItem {
+  id: number;
   month: string;
   date: string;
-  modules: DeductionModule;
+  fields: DeductionField[];
   total: number;
 }
 
+export interface DeductionMonthGroup {
+  month: string;
+  date: string;
+  items: DeductionHistoryItem[];
+}
+
+export interface PaginationInfo {
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+}
+
 export interface DeductionHistoryResponse {
-  history: DeductionHistoryItem[];
+  items: DeductionHistoryItem[];
+  groupedByMonth: DeductionMonthGroup[];
   summary: {
-    totalMonths: number;
+    totalItems: number;
     totalAmount: number;
   };
+  pagination: PaginationInfo;
 }
 
 export interface ChartDataItem {

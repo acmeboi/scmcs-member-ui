@@ -99,7 +99,36 @@ const PasswordReset: React.FC = () => {
           </Text>
         </div>
         
-        {token && (
+        {!token ? (
+          <>
+            <Alert
+              message="No reset token found"
+              description="Please check your email for the password reset link, or request a new one."
+              type="info"
+              showIcon
+              style={{ marginBottom: tokenHook.sizeLG }}
+            />
+            <div style={{ textAlign: 'center', marginBottom: tokenHook.sizeLG }}>
+              <Link
+                to={ROUTES.FORGOT_PASSWORD}
+                style={{
+                  fontSize: tokenHook.fontSize,
+                  color: tokenHook.colorPrimary,
+                  textDecoration: 'none',
+                  fontWeight: 500,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.textDecoration = 'underline';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.textDecoration = 'none';
+                }}
+              >
+                Request password reset link
+              </Link>
+            </div>
+          </>
+        ) : (
           <Alert
             message="Reset token detected"
             description="Your password reset link has been automatically recognized. Please enter your new password below."
@@ -110,7 +139,8 @@ const PasswordReset: React.FC = () => {
           />
         )}
         
-        <Form
+        {token && (
+          <Form
           form={form}
           name="passwordReset"
           onFinish={onFinish}
@@ -199,6 +229,7 @@ const PasswordReset: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
+        )}
 
         <div
           style={{

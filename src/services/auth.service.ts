@@ -2,6 +2,8 @@ import { API_ENDPOINTS } from '@/config/api';
 import type {
     LoginRequest,
     LoginResponse,
+    PasswordResetRequest,
+    PasswordResetRequestResponse,
     PasswordUpdateRequest,
     PasswordUpdateResponse,
     SignUpRequest,
@@ -48,6 +50,16 @@ export const authService = {
           'Content-Type': 'application/ld+json',
           'accept': 'application/ld+json',
         },
+      }
+    );
+    return response.data;
+  },
+
+  requestPasswordReset: async (data: PasswordResetRequest): Promise<PasswordResetRequestResponse> => {
+    const response = await apiClient.post<PasswordResetRequestResponse>(
+      API_ENDPOINTS.PASSWORD_RESET_REQUEST,
+      {
+        email: data.email,
       }
     );
     return response.data;

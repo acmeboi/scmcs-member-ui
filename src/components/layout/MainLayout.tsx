@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SCMCSLogo } from './SCMCSLogo';
 import { SidebarIllustration } from './SidebarIllustration';
+import BottomNavigation from './BottomNavigation';
 
 const { Header, Sider, Content } = Layout;
 
@@ -248,11 +249,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             padding: isMobile ? 16 : 24,
             minHeight: 280,
             background: 'transparent',
+            paddingBottom: isMobile ? 80 : 24, // Extra padding for bottom navigation
           }}
         >
           {children}
         </Content>
       </Layout>
+
+      {/* Mobile Bottom Navigation */}
+      {isMobile && <BottomNavigation />}
     </Layout>
   );
 };

@@ -58,6 +58,14 @@ export interface PasswordUpdateResponse {
   message: string;
 }
 
+export interface PasswordResetRequest {
+  email: string;
+}
+
+export interface PasswordResetRequestResponse {
+  message: string;
+}
+
 export interface RefreshTokenRequest {
   refresh_token: string;
 }
