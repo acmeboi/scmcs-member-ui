@@ -2,6 +2,8 @@ import { API_BASE_URL, API_ENDPOINTS } from '@/config/api';
 import type {
   LoginRequest,
   LoginResponse,
+  PasswordResetRequest,
+  PasswordResetRequestResponse,
   PasswordUpdateRequest,
   PasswordUpdateResponse,
   RefreshTokenRequest,
@@ -203,6 +205,16 @@ export const apiSlice = createApi({
       invalidatesTags: ['Auth', 'User'],
     }),
 
+    requestPasswordReset: builder.mutation<PasswordResetRequestResponse, PasswordResetRequest>({
+      query: (data) => ({
+        url: API_ENDPOINTS.PASSWORD_RESET_REQUEST,
+        method: 'POST',
+        data: {
+          email: data.email,
+        },
+      }),
+    }),
+
     refreshToken: builder.mutation<RefreshTokenResponse, RefreshTokenRequest>({
       query: (data) => ({
         url: API_ENDPOINTS.TOKEN_REFRESH,
@@ -251,14 +263,26 @@ export const apiSlice = createApi({
       keepUnusedDataFor: 300,
     }),
 
-    getDeductionHistory: builder.query<DeductionHistoryResponse, { months?: number }>({
-      query: (params) => ({
-        url: API_ENDPOINTS.MEMBER_DEDUCTION_HISTORY,
-        method: 'GET',
-        params: params.months ? { months: params.months } : {},
-      }),
+    getDeductionHistory: builder.query<
+      DeductionHistoryResponse,
+      { months?: number; startDate?: string; endDate?: string; page?: number; limit?: number }
+    >({
+      query: (params) => {
+        const queryParams: Record<string, string | number> = {};
+        if (params.months) queryParams.months = params.months;
+        if (params.startDate) queryParams.startDate = params.startDate;
+        if (params.endDate) queryParams.endDate = params.endDate;
+        if (params.page) queryParams.page = params.page;
+        if (params.limit) queryParams.limit = params.limit;
+        
+        return {
+          url: API_ENDPOINTS.MEMBER_DEDUCTION_HISTORY,
+          method: 'GET',
+          params: queryParams,
+        };
+      },
       providesTags: (_result, _error, arg) => [
-        { type: 'Deductions', id: `months-${arg.months || 12}` },
+        { type: 'Deductions', id: `page-${arg.page || 1}-limit-${arg.limit || 20}` },
         'Deductions',
       ],
       // Cache for 5 minutes

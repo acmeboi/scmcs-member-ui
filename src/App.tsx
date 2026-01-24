@@ -8,6 +8,7 @@ import { Spin } from 'antd';
 
 const Login = lazy(() => import('./views/auth/Login'));
 const SignUp = lazy(() => import('./views/auth/SignUp'));
+const ForgotPassword = lazy(() => import('./views/auth/ForgotPassword'));
 const PasswordReset = lazy(() => import('./views/auth/PasswordReset'));
 const Dashboard = lazy(() => import('./views/dashboard/Dashboard'));
 const Loans = lazy(() => import('./views/dashboard/Loans'));
@@ -27,6 +28,7 @@ function App() {
           {/* Public routes */}
           <Route path={ROUTES.LOGIN} element={<Login />} />
           <Route path={ROUTES.SIGNUP} element={<SignUp />} />
+          <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
           <Route path={ROUTES.PASSWORD_RESET} element={<PasswordReset />} />
           
           {/* Protected routes */}

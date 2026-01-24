@@ -129,7 +129,7 @@ const Login: React.FC = () => {
             }}
           >
             <Link
-              to={ROUTES.PASSWORD_RESET}
+              to={ROUTES.FORGOT_PASSWORD}
               style={{
                 fontSize: token.fontSizeSM,
                 color: token.colorPrimary,
